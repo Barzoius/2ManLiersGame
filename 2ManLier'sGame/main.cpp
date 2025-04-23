@@ -1,7 +1,10 @@
 #include <iostream>
+#include "TicTacToe.cpp"
 
 int main()
 {
-    std::cout << "womp womp";
+    Trainer trainer;
+    trainer.train(10000);
+    trainer.print_final_strategies();
     return 0;
 }
