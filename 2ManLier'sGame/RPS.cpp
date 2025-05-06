@@ -16,6 +16,7 @@ private:
                                                    {1, 0, -1},     // Paper
                                                    {-1, 1, 0} };   // Scissors
 
+public:
 
     // Cumulative regret for each action 
     std::vector<double> regretSum = { 0, 0, 0 };
