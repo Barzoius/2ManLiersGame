@@ -4,7 +4,7 @@
 
 - The 2 Man Lier's Game
 - Counterfactual Regret Minimization (CFR)
-- On X & 0
+- On Rock Paper Scissors
 - On the 2 Man Lier's Game
 
 ## The 2 Man Lier's Game
