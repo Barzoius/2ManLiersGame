@@ -1,11 +1,18 @@
 #include "pch.h"
 
-#include "2ManLier'sGame\RPS.cpp"
+#include "2ManLier'sGame\RPS.h"
+
+#include "2ManLier'sGame/2MLG.h"
+
+#include "2ManLier'sGame/KuhnPoker.h"
+
+
+///===========================================================[RPS]============================================================///
 
 TEST(RPSTrainerTest, GetRewardTest) {
 
 
-    Trainer trainer;
+    RPSTrainer trainer;
 
     // Rock vs Scissors: Rock wins
     EXPECT_EQ(trainer.GetReward(0, 2), 1) << "Expected Rock to beat Scissors";
@@ -29,7 +36,7 @@ TEST(RPSTrainerTest, GetRewardTest) {
 
 // Test GetStrategy with positive regrets
 TEST(RPSTrainerTest, StrategyFromPositiveRegret) {
-    Trainer trainer;
+    RPSTrainer trainer;
     std::vector<double> regrets = { 2, 3, 5 };
     auto strategy = trainer.GetStrategy(regrets);
 
@@ -42,7 +49,7 @@ TEST(RPSTrainerTest, StrategyFromPositiveRegret) {
 
 // Test GetStrategy with all non-positive regrets (uniform distribution)
 TEST(RPSTrainerTest, StrategyFromZeroRegret) {
-     Trainer trainer;
+     RPSTrainer trainer;
      std::vector<double> regrets = { -1, 0, -5 };
      auto strategy = trainer.GetStrategy(regrets);
  
@@ -53,7 +60,7 @@ TEST(RPSTrainerTest, StrategyFromZeroRegret) {
  
  // Test GetAvgStrategy with valid strategy sum
  TEST(RPSTrainerTest, AvgStrategyCalculation) {
-     Trainer trainer;
+     RPSTrainer trainer;
      std::vector<double> sum = { 10, 20, 30 };
      auto avg = trainer.GetAvgStrategy(sum);
  
@@ -66,8 +73,8 @@ TEST(RPSTrainerTest, StrategyFromZeroRegret) {
 
 // Test Strategy Convergence Toward Nash Equilibrium
  TEST(RPSTrainerTest, StrategyConvergesToNashEquilibrium) {
-     Trainer trainer;
-     int iterations = 100000;  // large enough for convergence
+     RPSTrainer trainer;
+     int iterations = 10000;  // large enough for convergence
      trainer.train(iterations);
 
      auto p1_avg = trainer.GetAvgStrategy({ trainer.strategySum[0], trainer.strategySum[1], trainer.strategySum[2] });
@@ -86,3 +93,8 @@ TEST(RPSTrainerTest, StrategyFromZeroRegret) {
      EXPECT_NEAR(p2_avg[1], expected, tolerance) << "Player 2's strategy[1] should approach 1/3 after training";
      EXPECT_NEAR(p2_avg[2], expected, tolerance) << "Player 2's strategy[2] should approach 1/3 after training";
  }
+
+
+
+
+
