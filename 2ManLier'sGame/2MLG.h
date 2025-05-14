@@ -23,7 +23,7 @@ struct Node
     std::vector<double> strategy = { 0.5, 0.5 };
     std::vector<double> strategySum = { 0, 0 };
 
-    std::vector<double> GetStrategy(double realizationWeight);
+    std::vector<double> GetStrategy(double realizationWeight, bool isFirstMove);
     std::vector<double> GetAvgStrategy() const;
 };
 

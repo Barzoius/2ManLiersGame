@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2MLG.h" />
+    <ClInclude Include="FA_RPS.h" />
     <ClInclude Include="KuhnPoker.h" />
     <ClInclude Include="RPS.h" />
   </ItemGroup>

@@ -1,10 +1,13 @@
 #include "pch.h"
 
-#include "2ManLier'sGame\RPS.h"
+#include "2ManLier'sGame\RPS.cpp"
 
-#include "2ManLier'sGame/2MLG.h"
+#include "2ManLier'sGame\KhunPoker.cpp"
 
-#include "2ManLier'sGame/KuhnPoker.h"
+#include "2ManLier'sGame\2MLG.cpp"
+
+
+#include "2ManLier'sGame\FA_RPS.h"
 
 
 ///===========================================================[RPS]============================================================///
@@ -95,6 +98,7 @@ TEST(RPSTrainerTest, StrategyFromZeroRegret) {
  }
 
 
+
  ///===========================================================[2MLG]============================================================///
 
  TEST(MLGTest, MatchesActiveTest)
@@ -120,7 +124,7 @@ TEST(RPSTrainerTest, StrategyFromZeroRegret) {
      Node node;
      node.regretSum = { 10.0, 0.0 };
 
-     std::vector<double> strat = node.GetStrategy(1.0);
+     std::vector<double> strat = node.GetStrategy(1.0, false);
 
      EXPECT_NEAR(strat[0], 1.0, 1e-6) << "Expected full strategy on action 0";
      EXPECT_NEAR(strat[1], 0.0, 1e-6) << "Expected zero strategy on action 1";

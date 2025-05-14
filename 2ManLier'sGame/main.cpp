@@ -1,6 +1,8 @@
 #include <iostream>
 
 #include "RPS.h"
+#include "FA_RPS.h"
+
 #include "KuhnPoker.h"
 #include "2MLG.h"
 
@@ -58,6 +60,46 @@ void Train2MLG()
     std::cout << "Training execution time: " << duration.count() << " ms" << std::endl;
 }
 
+void Simulate_FA_VS_CFR(int iterations)
+{
+    RPSTrainer cfrBot;
+    FrequencyBot freqBot;
+
+    std::vector<int> win_counts = { 0, 0, 0 }; // [CFR wins, FrequencyBot wins, Draws]
+
+    for (int i = 0; i < iterations; ++i) {
+        auto strategy = cfrBot.GetStrategy(cfrBot.regretSum); // CFR strategy
+        int cfr_action = cfrBot.GetAction(strategy);          // CFR move
+        int freq_action = freqBot.GetAction();                // FrequencyBot move
+
+        int result = cfrBot.GetReward(cfr_action, freq_action);
+        // result: +1 (CFR win), 0 (draw), -1 (loss)
+
+        // Update outcome stats
+        if (result == 1) win_counts[0]++;
+        else if (result == -1) win_counts[1]++;
+        else win_counts[2]++;
+
+        // Update both bots
+        freqBot.RecordOpponentMove(cfr_action); // Frequency bot learns from CFR's move
+
+        // CFR updates regret based on the single game
+        for (int k = 0; k < 3; k++) {
+            double regret = cfrBot.GetReward(k, freq_action) - cfrBot.GetReward(cfr_action, freq_action);
+            cfrBot.regretSum[k] += regret;
+            cfrBot.strategySum[k] += strategy[k];
+        }
+    }
+
+    // Print final results
+    std::cout << "\nGame Results after " << iterations << " iterations:\n";
+    std::cout << "CFR Wins: " << win_counts[0] << "\n";
+    std::cout << "FrequencyBot Wins: " << win_counts[1] << "\n";
+    std::cout << "Draws: " << win_counts[2] << "\n\n";
+
+    //cfrBot.print_final_strategies();
+}
+
 void menu()
 {
     int k = 1;
@@ -69,6 +111,8 @@ void menu()
         std::cout << "1 - ROCK PAPER SCISSORS\n";
         std::cout << "2 - KHUN POKER\n";
         std::cout << "3 - 2 MAN LIER'S GAME\n";
+        std::cout << "4 - CFR VS FREQA\n";
+
         std::cout << "=========================="<<std::endl;
 
 
@@ -100,6 +144,12 @@ void menu()
             case 3:
             {
                 Train2MLG();
+                break;
+            }
+
+            case 4:
+            {
+                Simulate_FA_VS_CFR(100);
                 break;
             }
 
