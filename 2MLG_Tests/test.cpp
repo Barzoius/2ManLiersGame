@@ -270,6 +270,32 @@ TEST(RPSTrainerTest, StrategyFromZeroRegret) {
  //    EXPECT_EQ(trainer.get_reward("pp", 1, 2), -1) << "Expected Player 1 to lose with lower card";
  //}
 
+///==========================================================[FREQAN]===========================================================///
 
+
+ TEST(FrequencyBotTest, RespondsToRockSpam) {
+     FrequencyBot bot;
+     for (int i = 0; i < 10; ++i)
+         bot.RecordOpponentMove(0); // Opponent keeps playing Rock
+
+     EXPECT_EQ(bot.GetAction(), 1) << "Expected Paper to beat Rock";
+ }
+
+ TEST(FrequencyBotTest, RespondsToPaperSpam) {
+     FrequencyBot bot;
+     for (int i = 0; i < 5; ++i)
+         bot.RecordOpponentMove(1); // Opponent keeps playing Paper
+
+     EXPECT_EQ(bot.GetAction(), 2) << "Expected Scissors to beat Paper";
+ }
+
+
+ TEST(FrequencyBotTest, RespondsToScissorsSpam) {
+     FrequencyBot bot;
+     for (int i = 0; i < 7; ++i)
+         bot.RecordOpponentMove(2); // Opponent plays Scissors
+
+     EXPECT_EQ(bot.GetAction(), 0) << "Expected Rock to beat Scissors";
+ }
 
 
