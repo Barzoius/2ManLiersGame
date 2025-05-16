@@ -59,8 +59,38 @@ The CFR algorithm proceeds in iterations, and each one looks like this:
 
     - More favorable actions (lower regret) become more likely over time.
 
+## On Rock Paper Scissors
+
+### CFR vs CFR 
+In this implementation, we modeled the Rock-Paper-Scissors (RPS) game using Counterfactual Regret Minimization (CFR) to train two bots to play optimally over repeated iterations. Each bot maintains a cumulative regret for each action, which measures how much better it could have done had it played differently in past rounds. At each training iteration, the bots convert their regret sums into a mixed strategy by focusing only on positive regrets, normalizing them to form a probability distribution; if all regrets are non-positive, the bot plays uniformly at random. Both bots sample their actions from their respective strategies using a discrete probability distribution. After each round, they calculate their rewards based on the RPS payoff matrix, update their regrets accordingly, and accumulate their strategy probabilities to compute average strategies over time. This iterative process allows the bots to adjust their play towards a Nash equilibrium, where neither player can gain by unilaterally changing their strategy, effectively learning to play RPS optimally through self-play.
+
+The results below show how each bot develops its strategy over time and how those strategies converge toward expected outcomes:
+
+<div style="text-align: center;">
+  <img src="others/ss2.png" alt="Framework Diagram" style="width:60%;">
+</div>
+
+
+### CFR VS FREQUENCY BOT
+
+In this simulation, a CFR-based bot plays against a Frequency Analysis bot in repeated rounds of Rock-Paper-Scissors. The CFR bot continuously updates its strategy by tracking and accumulating regrets over time, adapting its choices based on how well each possible action would have performed against the opponent's actual moves. Meanwhile, the FrequencyBot observes and records the CFR bot’s past moves, analyzing the frequency of each action to predict the most likely next move. It then counters this prediction by choosing the action that would beat the most frequent move seen so far. As a result, the CFR bot learns through regret minimization how to exploit or defend against the FrequencyBot’s adaptive pattern, while the FrequencyBot tries to anticipate and exploit recurring tendencies in the CFR bot’s behavior. 
+
+The results below show the average number of wins for each bot, as well as the average number of draws, across simulations with different iteration counts:
+
+<div style="text-align: center;">
+  <img src="others/ss1.png" alt="Framework Diagram" style="width:100%;">
+</div>
+
+</br>
+
+<div style="text-align: center;">
+  <img src="others/Figure_1.png" alt="Framework Diagram" style="width:80%;">
+</div>
+
 ## Resources
 - Martin Zinkevich, Michael Johanson, Michael Bowling, Carmelo Piccione Regret Minimization in Games with Incomplete
 Information, 2008
 - Todd W. Neller, Marc Lanctot An Introduction to Counterfactual Regret Minimization, 2013
 - Xinyu Zhang Learn AI Game Playing Algorithm Part III — Counterfactual Regret Minimization
+
+

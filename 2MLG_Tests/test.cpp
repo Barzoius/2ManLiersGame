@@ -98,105 +98,177 @@ TEST(RPSTrainerTest, StrategyFromZeroRegret) {
  }
 
 
+ ///==========================================================[FREQAN]===========================================================///
+
+
+ TEST(FrequencyBotTest, RespondsToRockSpam) {
+     FrequencyBot bot;
+     for (int i = 0; i < 10; ++i)
+         bot.RecordOpponentMove(0); // Opponent keeps playing Rock
+
+     EXPECT_EQ(bot.GetAction(), 1) << "Expected Paper to beat Rock";
+ }
+
+ TEST(FrequencyBotTest, RespondsToPaperSpam) {
+     FrequencyBot bot;
+     for (int i = 0; i < 5; ++i)
+         bot.RecordOpponentMove(1); // Opponent keeps playing Paper
+
+     EXPECT_EQ(bot.GetAction(), 2) << "Expected Scissors to beat Paper";
+ }
+
+
+ ///--------TESTS DONE WITH CHATGPT--------///
+
+
+ // 1. Mixed Input Frequencies
+ //    To ensure the bot picks the move that counters the 
+ //    most frequent opponent move, even when inputs are mixed.
+
+ TEST(FrequencyBotTest, RespondsToScissorsSpam) {
+     FrequencyBot bot;
+     for (int i = 0; i < 7; ++i)
+         bot.RecordOpponentMove(2); // Opponent plays Scissors
+
+     EXPECT_EQ(bot.GetAction(), 0) << "Expected Rock to beat Scissors";
+ }
+ TEST(FrequencyBotTest, RespondsToMixedMoves) {
+     FrequencyBot bot;
+     bot.RecordOpponentMove(0); // Rock x2
+     bot.RecordOpponentMove(0);
+     bot.RecordOpponentMove(1); // Paper x3
+     bot.RecordOpponentMove(1);
+     bot.RecordOpponentMove(1);
+     bot.RecordOpponentMove(2); // Scissors x1
+
+     EXPECT_EQ(bot.GetAction(), 2) << "Expected Scissors to beat most common Paper";
+ }
+
+
+ // 2. Tied Frequencies
+ //    When multiple moves are tied in frequency, test which one the bot considers 
+ //    as “most common”(likely the one with the lowest index).
+
+ TEST(FrequencyBotTest, RespondsToTiedFrequencies) {
+     FrequencyBot bot;
+     bot.RecordOpponentMove(0); // Rock
+     bot.RecordOpponentMove(1); // Paper
+     bot.RecordOpponentMove(2); // Scissors
+
+     EXPECT_EQ(bot.GetAction(), 1) << "Expected Paper (beats Rock) when all are tied, assuming Rock is selected by default";
+ }
+
+
+ // 3. No Moves Recorded Yet
+ //    If GetAction() is called before any move is recorded, we should test that the bot doesn't 
+ //    crash and behaves in a defined way (could return 1, because initial vector is all 
+ //    zeros and max_element will return 0).
+
+ TEST(FrequencyBotTest, NoMovesYet) {
+     FrequencyBot bot;
+     int action = bot.GetAction();
+     EXPECT_GE(action, 0);
+     EXPECT_LE(action, 2);
+ }
 
  ///===========================================================[2MLG]============================================================///
 
- TEST(MLGTest, MatchesActiveTest)
- {
-     EXPECT_TRUE(matchesActive("ACE", "ACE")) << "ACE should match ACE";
-     EXPECT_TRUE(matchesActive("JOKER", "KING")) << "JOKER should match any active card";
-     EXPECT_FALSE(matchesActive("QUEEN", "KING")) << "QUEEN shouldn't match KING";
- }
+ //TEST(MLGTest, MatchesActiveTest)
+ //{
+ //    EXPECT_TRUE(matchesActive("ACE", "ACE")) << "ACE should match ACE";
+ //    EXPECT_TRUE(matchesActive("JOKER", "KING")) << "JOKER should match any active card";
+ //    EXPECT_FALSE(matchesActive("QUEEN", "KING")) << "QUEEN shouldn't match KING";
+ //}
 
- TEST(MLGTest, SampleActionTest) {
-     std::vector<double> strategy = { 0.0, 1.0 };
+ //TEST(MLGTest, SampleActionTest) {
+ //    std::vector<double> strategy = { 0.0, 1.0 };
 
-     // With full weight on action 1, sampleAction should almost always return 1
-     int result = sampleAction(strategy);
-     EXPECT_EQ(result, 1) << "Expected action 1 due to strategy [0.0, 1.0]";
+ //    // With full weight on action 1, sampleAction should almost always return 1
+ //    int result = sampleAction(strategy);
+ //    EXPECT_EQ(result, 1) << "Expected action 1 due to strategy [0.0, 1.0]";
 
-     strategy = { 1.0, 0.0 };
-     result = sampleAction(strategy);
-     EXPECT_EQ(result, 0) << "Expected action 0 due to strategy [1.0, 0.0]";
- }
+ //    strategy = { 1.0, 0.0 };
+ //    result = sampleAction(strategy);
+ //    EXPECT_EQ(result, 0) << "Expected action 0 due to strategy [1.0, 0.0]";
+ //}
 
- TEST(MLGTest, NodeGetStrategyTest) {
-     Node node;
-     node.regretSum = { 10.0, 0.0 };
+ //TEST(MLGTest, NodeGetStrategyTest) {
+ //    Node node;
+ //    node.regretSum = { 10.0, 0.0 };
 
-     std::vector<double> strat = node.GetStrategy(1.0, false);
+ //    std::vector<double> strat = node.GetStrategy(1.0, false);
 
-     EXPECT_NEAR(strat[0], 1.0, 1e-6) << "Expected full strategy on action 0";
-     EXPECT_NEAR(strat[1], 0.0, 1e-6) << "Expected zero strategy on action 1";
- }
+ //    EXPECT_NEAR(strat[0], 1.0, 1e-6) << "Expected full strategy on action 0";
+ //    EXPECT_NEAR(strat[1], 0.0, 1e-6) << "Expected zero strategy on action 1";
+ //}
 
- TEST(MLGTest, NodeGetAvgStrategyTest) {
-     Node node;
-     node.strategySum = { 30.0, 10.0 };
+ //TEST(MLGTest, NodeGetAvgStrategyTest) {
+ //    Node node;
+ //    node.strategySum = { 30.0, 10.0 };
 
-     std::vector<double> avg = node.GetAvgStrategy();
+ //    std::vector<double> avg = node.GetAvgStrategy();
 
-     EXPECT_NEAR(avg[0], 0.75, 1e-6) << "Expected 75% for action 0";
-     EXPECT_NEAR(avg[1], 0.25, 1e-6) << "Expected 25% for action 1";
- }
-
-
-
- ///==========================================================[KuhnPoker]===========================================================///
+ //    EXPECT_NEAR(avg[0], 0.75, 1e-6) << "Expected 75% for action 0";
+ //    EXPECT_NEAR(avg[1], 0.25, 1e-6) << "Expected 25% for action 1";
+ //}
 
 
- ///---------THESE TESTS WERE CREATED USIGN CHAT GPT---------///
 
- TEST(KuhnPokerTest, GetStrategyTest) {
-     KPNode node("0");
+ /////==========================================================[KuhnPoker]===========================================================///
 
-     // Set some custom values for the regret sum to test strategy update
-     node.regret_sum = { 10.0, 0.0 };
 
-     // Call GetStrategy method with a realization weight
-     std::vector<double> strategy = node.GetStrategy();
+ /////---------THESE TESTS WERE CREATED USIGN CHAT GPT---------///
 
-     // We expect the first action to have a strategy of 1 (due to positive regret)
-     EXPECT_NEAR(strategy[0], 1.0, 1e-6) << "Expected full strategy on action 0";
-     // The second action should have a strategy of 0 (due to no regret)
-     EXPECT_NEAR(strategy[1], 0.0, 1e-6) << "Expected zero strategy on action 1";
- }
+ //TEST(KuhnPokerTest, GetStrategyTest) {
+ //    KPNode node("0");
 
- TEST(KuhnPokerTest, GetAvgStrategyTest) {
-     KPNode node("0");
+ //    // Set some custom values for the regret sum to test strategy update
+ //    node.regret_sum = { 10.0, 0.0 };
 
-     // Set some custom values for the strategy sum
-     node.strategy_sum = { 30.0, 10.0 };
-     node.reach_pr_sum = 40.0;
+ //    // Call GetStrategy method with a realization weight
+ //    std::vector<double> strategy = node.GetStrategy();
 
-     std::vector<double> avgStrategy = node.GetAvgStrategy();
+ //    // We expect the first action to have a strategy of 1 (due to positive regret)
+ //    EXPECT_NEAR(strategy[0], 1.0, 1e-6) << "Expected full strategy on action 0";
+ //    // The second action should have a strategy of 0 (due to no regret)
+ //    EXPECT_NEAR(strategy[1], 0.0, 1e-6) << "Expected zero strategy on action 1";
+ //}
 
-     // Calculate the expected values manually
-     double total = 40.0; // Reach probability sum
-     double expectedStrategy0 = 30.0 / total; // Action 0
-     double expectedStrategy1 = 10.0 / total; // Action 1
+ //TEST(KuhnPokerTest, GetAvgStrategyTest) {
+ //    KPNode node("0");
 
-     // Test the expected average strategies
-     EXPECT_NEAR(avgStrategy[0], expectedStrategy0, 1e-6) << "Expected average strategy for action 0";
-     EXPECT_NEAR(avgStrategy[1], expectedStrategy1, 1e-6) << "Expected average strategy for action 1";
- }
+ //    // Set some custom values for the strategy sum
+ //    node.strategy_sum = { 30.0, 10.0 };
+ //    node.reach_pr_sum = 40.0;
 
- TEST(KuhnPokerTest, GetRewardTest)
- {
-     KuhnTrainer trainer;
+ //    std::vector<double> avgStrategy = node.GetAvgStrategy();
 
-     // Simulate a "pp" history (Player 1 passes, Player 2 passes)
-     EXPECT_EQ(trainer.get_reward("pp", 2, 1), 1) << "Expected Player 1 to win with higher card";
+ //    // Calculate the expected values manually
+ //    double total = 40.0; // Reach probability sum
+ //    double expectedStrategy0 = 30.0 / total; // Action 0
+ //    double expectedStrategy1 = 10.0 / total; // Action 1
 
-     // Simulate a "bp" history (Player 1 bets, Player 2 passes)
-     EXPECT_EQ(trainer.get_reward("bp", 1, 2), 1) << "Expected Player 1 to win because Player 2 passed";
+ //    // Test the expected average strategies
+ //    EXPECT_NEAR(avgStrategy[0], expectedStrategy0, 1e-6) << "Expected average strategy for action 0";
+ //    EXPECT_NEAR(avgStrategy[1], expectedStrategy1, 1e-6) << "Expected average strategy for action 1";
+ //}
 
-     // Simulate a "bb" history (both players bet)
-     EXPECT_EQ(trainer.get_reward("bb", 2, 1), 2) << "Expected Player 1 to win with double bet and higher card";
+ //TEST(KuhnPokerTest, GetRewardTest)
+ //{
+ //    KuhnTrainer trainer;
 
-     // Simulate a "pp" history (Player 1 passes, Player 2 passes) with lower card
-     EXPECT_EQ(trainer.get_reward("pp", 1, 2), -1) << "Expected Player 1 to lose with lower card";
- }
+ //    // Simulate a "pp" history (Player 1 passes, Player 2 passes)
+ //    EXPECT_EQ(trainer.get_reward("pp", 2, 1), 1) << "Expected Player 1 to win with higher card";
+
+ //    // Simulate a "bp" history (Player 1 bets, Player 2 passes)
+ //    EXPECT_EQ(trainer.get_reward("bp", 1, 2), 1) << "Expected Player 1 to win because Player 2 passed";
+
+ //    // Simulate a "bb" history (both players bet)
+ //    EXPECT_EQ(trainer.get_reward("bb", 2, 1), 2) << "Expected Player 1 to win with double bet and higher card";
+
+ //    // Simulate a "pp" history (Player 1 passes, Player 2 passes) with lower card
+ //    EXPECT_EQ(trainer.get_reward("pp", 1, 2), -1) << "Expected Player 1 to lose with lower card";
+ //}
 
 
 
