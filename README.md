@@ -77,7 +77,7 @@ In this simulation, a CFR-based bot plays against a Frequency Analysis bot in re
 
 The results below show the average number of wins for each bot, as well as the average number of draws, across simulations with different iteration counts:
 
-<div style="text-align: center;">
+<div align="center">
   <img src="others/ss3.png" alt="Framework Diagram" style="width:80%;">
 </div>
 
