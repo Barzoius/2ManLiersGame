@@ -113,6 +113,24 @@ void Simulate_FA_VS_CFR(int iterations)
             //std::cout << "FrequencyBot Wins: " << win_counts[1] << "\n";
             //std::cout << "Draws: " << win_counts[2] << "\n\n";
 
+
+            // --- Print CFR Strategy ---
+            //double normalizingSum = std::accumulate(cfrBot.strategySum.begin(), cfrBot.strategySum.end(), 0.0);
+            //std::cout << "\nFinal CFR Strategy:\n";
+            //for (int i = 0; i < 3; ++i) {
+            //    double avgStrategy = normalizingSum > 0 ? cfrBot.strategySum[i] / normalizingSum : 1.0 / 3;
+            //    std::cout << "Action " << i << ": " << avgStrategy << "\n";
+            //}
+
+            //// --- Print FrequencyBot Strategy ---
+            //std::vector<int> freqCounts = freqBot.GetObservedCounts(); 
+            //int total = std::accumulate(freqCounts.begin(), freqCounts.end(), 0);
+            //std::cout << "\nFinal FrequencyBot Strategy (based on CFR move frequencies):\n";
+            //for (int i = 0; i < 3; ++i) {
+            //    double freq = total > 0 ? static_cast<double>(freqCounts[i]) / total : 1.0 / 3;
+            //    std::cout << "Action " << i << ": " << freq << "\n";
+            //}
+
             results[jj][0] += win_counts[0];
             results[jj][1] += win_counts[1];
             results[jj][2] += win_counts[2];
@@ -145,6 +163,61 @@ void Simulate_FA_VS_CFR(int iterations)
             << " |\n";
     }
 }
+
+void FA_VS_CFR_STRATEGIES(int iterations)
+{
+    RPSTrainer cfrBot;
+    FrequencyBot freqBot;
+
+    std::vector<int> win_counts = { 0, 0, 0 }; // [CFR wins, FrequencyBot wins, Draws]
+
+    for (int i = 0; i < iterations; ++i) {
+        auto strategy = cfrBot.GetStrategy(cfrBot.regretSum); // CFR strategy
+        int cfr_action = cfrBot.GetAction(strategy);          // CFR move
+        int freq_action = freqBot.GetAction();                // FrequencyBot move
+
+        int result = cfrBot.GetReward(cfr_action, freq_action);
+
+        // Update outcome stats
+        if (result == 1) win_counts[0]++;
+        else if (result == -1) win_counts[1]++;
+        else win_counts[2]++;
+
+        // Update both bots
+        freqBot.RecordOpponentMove(cfr_action); // Frequency bot learns from CFR's move
+
+        // CFR updates regret
+        for (int k = 0; k < 3; k++) {
+            double regret = cfrBot.GetReward(k, freq_action) - cfrBot.GetReward(cfr_action, freq_action);
+            cfrBot.regretSum[k] += regret;
+            cfrBot.strategySum[k] += strategy[k];
+        }
+    }
+
+    // Print final results
+    std::cout << "\nGame Results after " << iterations << " iterations:\n";
+    std::cout << "CFR Wins: " << win_counts[0] << "\n";
+    std::cout << "FrequencyBot Wins: " << win_counts[1] << "\n";
+    std::cout << "Draws: " << win_counts[2] << "\n";
+
+    // --- Print CFR Strategy ---
+    double normalizingSum = std::accumulate(cfrBot.strategySum.begin(), cfrBot.strategySum.end(), 0.0);
+    std::cout << "\nCFR Strategy:\n";
+    for (int i = 0; i < 3; ++i) {
+        double avgStrategy = normalizingSum > 0 ? cfrBot.strategySum[i] / normalizingSum : 1.0 / 3;
+        std::cout << "Action " << i << ": " << avgStrategy << "\n";
+    }
+
+    // --- Print FrequencyBot Strategu ---
+    std::vector<int> freqCounts = freqBot.GetObservedCounts(); 
+    int total = std::accumulate(freqCounts.begin(), freqCounts.end(), 0);
+    std::cout << "\nFrequencyBot Strategy (based on CFR move frequencies):\n";
+    for (int i = 0; i < 3; ++i) {
+        double freq = total > 0 ? static_cast<double>(freqCounts[i]) / total : 1.0 / 3;
+        std::cout << "Action " << i << ": " << freq << "\n";
+    }
+}
+
 
 void menu()
 {

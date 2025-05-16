@@ -21,6 +21,10 @@ public:
         move_counts[move]++;
     }
 
+    std::vector<int> GetObservedCounts() const {
+        return move_counts;
+    }
+
 private:
     std::vector<int> move_counts;
     std::random_device rd;

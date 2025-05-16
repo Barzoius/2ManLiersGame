@@ -66,7 +66,7 @@ In this implementation, we modeled the Rock-Paper-Scissors (RPS) game using Coun
 
 The results below show how each bot develops its strategy over time and how those strategies converge toward expected outcomes:
 
-<div style="text-align: center;">
+<div align="center">
   <img src="others/ss2.png" alt="Framework Diagram" style="width:60%;">
 </div>
 
@@ -78,14 +78,48 @@ In this simulation, a CFR-based bot plays against a Frequency Analysis bot in re
 The results below show the average number of wins for each bot, as well as the average number of draws, across simulations with different iteration counts:
 
 <div style="text-align: center;">
+  <img src="others/ss3.png" alt="Framework Diagram" style="width:80%;">
+</div>
+
+</br>
+
+
+
+<div style="text-align: center;">
   <img src="others/ss1.png" alt="Framework Diagram" style="width:100%;">
 </div>
 
 </br>
 
-<div style="text-align: center;">
+<div align="center">
   <img src="others/Figure_1.png" alt="Framework Diagram" style="width:80%;">
 </div>
+
+
+## Testing
+
+To ensure the correctness of the implementation, we used unit testing to verify that the functions return the expected results in various scenarios. This approach allowed us to quickly identify potential logical errors or unexpected behavior in the code. The unit tests were written using the Google Test (gtest) framework.
+
+Some Examples:
+
+|  |  | 
+|---|---|
+| ![](others/sst1.png)  | ![](others/sst2.png)|
+
+### The usage of AI in testing
+
+Given the code and the existing tests written by us, we asked ChatGPT if it could suggest additional possible tests and write them for us. This was its response:
+
+|  |  |  |
+|---|---|---|
+| ![](others/gpt1.png)  | ![](others/gpt2.png)|![](others/gpt3.png) |
+
+The complete conversation: https://chatgpt.com/share/68271e8a-17a0-800f-b8a0-c3bfeafd6d24
+
+## VIDEO DEMO
+The project itself: https://www.youtube.com/watch?v=16mmXHYV6Oc
+
+The tests: https://www.youtube.com/watch?v=4Pxa3bLVLOE
 
 ## Resources
 - Martin Zinkevich, Michael Johanson, Michael Bowling, Carmelo Piccione Regret Minimization in Games with Incomplete

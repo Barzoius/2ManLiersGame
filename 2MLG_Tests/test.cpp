@@ -117,6 +117,15 @@ TEST(RPSTrainerTest, StrategyFromZeroRegret) {
      EXPECT_EQ(bot.GetAction(), 2) << "Expected Scissors to beat Paper";
  }
 
+ TEST(FrequencyBotTest, RespondsToScissorsSpam) {
+     FrequencyBot bot;
+     for (int i = 0; i < 7; ++i)
+         bot.RecordOpponentMove(2); // Opponent plays Scissors
+
+     EXPECT_EQ(bot.GetAction(), 0) << "Expected Rock to beat Scissors";
+ }
+
+
 
  ///--------TESTS DONE WITH CHATGPT--------///
 
@@ -125,14 +134,8 @@ TEST(RPSTrainerTest, StrategyFromZeroRegret) {
  //    To ensure the bot picks the move that counters the 
  //    most frequent opponent move, even when inputs are mixed.
 
- TEST(FrequencyBotTest, RespondsToScissorsSpam) {
-     FrequencyBot bot;
-     for (int i = 0; i < 7; ++i)
-         bot.RecordOpponentMove(2); // Opponent plays Scissors
 
-     EXPECT_EQ(bot.GetAction(), 0) << "Expected Rock to beat Scissors";
- }
- TEST(FrequencyBotTest, RespondsToMixedMoves) {
+ TEST(FrequencyBotTest, GPT_RespondsToMixedMoves) {
      FrequencyBot bot;
      bot.RecordOpponentMove(0); // Rock x2
      bot.RecordOpponentMove(0);
@@ -149,7 +152,7 @@ TEST(RPSTrainerTest, StrategyFromZeroRegret) {
  //    When multiple moves are tied in frequency, test which one the bot considers 
  //    as “most common”(likely the one with the lowest index).
 
- TEST(FrequencyBotTest, RespondsToTiedFrequencies) {
+ TEST(FrequencyBotTest, GPT_RespondsToTiedFrequencies) {
      FrequencyBot bot;
      bot.RecordOpponentMove(0); // Rock
      bot.RecordOpponentMove(1); // Paper
@@ -164,7 +167,7 @@ TEST(RPSTrainerTest, StrategyFromZeroRegret) {
  //    crash and behaves in a defined way (could return 1, because initial vector is all 
  //    zeros and max_element will return 0).
 
- TEST(FrequencyBotTest, NoMovesYet) {
+ TEST(FrequencyBotTest, GPT_NoMovesYet) {
      FrequencyBot bot;
      int action = bot.GetAction();
      EXPECT_GE(action, 0);
@@ -269,33 +272,4 @@ TEST(RPSTrainerTest, StrategyFromZeroRegret) {
  //    // Simulate a "pp" history (Player 1 passes, Player 2 passes) with lower card
  //    EXPECT_EQ(trainer.get_reward("pp", 1, 2), -1) << "Expected Player 1 to lose with lower card";
  //}
-
-///==========================================================[FREQAN]===========================================================///
-
-
- TEST(FrequencyBotTest, RespondsToRockSpam) {
-     FrequencyBot bot;
-     for (int i = 0; i < 10; ++i)
-         bot.RecordOpponentMove(0); // Opponent keeps playing Rock
-
-     EXPECT_EQ(bot.GetAction(), 1) << "Expected Paper to beat Rock";
- }
-
- TEST(FrequencyBotTest, RespondsToPaperSpam) {
-     FrequencyBot bot;
-     for (int i = 0; i < 5; ++i)
-         bot.RecordOpponentMove(1); // Opponent keeps playing Paper
-
-     EXPECT_EQ(bot.GetAction(), 2) << "Expected Scissors to beat Paper";
- }
-
-
- TEST(FrequencyBotTest, RespondsToScissorsSpam) {
-     FrequencyBot bot;
-     for (int i = 0; i < 7; ++i)
-         bot.RecordOpponentMove(2); // Opponent plays Scissors
-
-     EXPECT_EQ(bot.GetAction(), 0) << "Expected Rock to beat Scissors";
- }
-
 
